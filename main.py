@@ -1,5 +1,27 @@
-import textstat
+#import textstat
 import numpy as np
+
+
+def syllable_count(word):
+  word = word.lower()
+  count = 0
+  vowels = "aeiouy"
+  if word[0] in vowels:
+    count += 1
+  for index in range(1, len(word)):
+    if word[index] in vowels and word[index - 1] not in vowels:
+      count += 1
+  if word.endswith("e"):
+    count -= 1
+  if count == 0:
+    count += 1
+  return count
+
+
+def flesch_reading_ease(str):
+  val = (206.835 - 1.015) * (len(str.split(' ')) / len(
+    str.split('.'))) - 84.6 * (syllable_count(str) / len(str.split(' ')))
+  return val
 
 
 def read_file_to_string(filename):
@@ -25,7 +47,7 @@ sentences = text.split(' ')
 scores = []
 
 for test_data in sentences:
-  t = textstat.flesch_reading_ease(test_data)
+  t = flesch_reading_ease(test_data)
   scores.append(t)
 
 count = count_outliers(scores)
